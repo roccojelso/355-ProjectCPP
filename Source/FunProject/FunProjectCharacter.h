@@ -6,16 +6,25 @@
 #include "GameFramework/Character.h"
 #include "FunProjectCharacter.generated.h"
 
+
+
+
 UCLASS(config = Game)
 class AFunProjectCharacter : public ACharacter
 {
+
 	GENERATED_BODY()
 
-		UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
+
+	UPROPERTY(VisibleAnywhere, Category = "Trigger Capsule")
+		class UCapsuleComponent* TriggerCapsule;
+
+
 
 public:
 	AFunProjectCharacter();
@@ -29,6 +38,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Combat")
 		TSubclassOf<AActor> projectileToSpawn;
 
+	UFUNCTION()
+		void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, 
+			class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, 
+			class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	class ALightSwitchButton* CurrentLightSwitch;
+
+
 protected:
 
 	void MoveForward(float Value);
@@ -41,6 +61,8 @@ protected:
 
 	void OnShoot();
 	void OnInteract();
+	void OnAction();
+
 
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
